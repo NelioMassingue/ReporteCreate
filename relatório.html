@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Plus Solutions - Sistema de Gestão</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    body {
+      background-color: #f8f9fa;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .login-container {
+      max-width: 400px;
+      margin: 100px auto;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      background-color: #fff;
+    }
+    
+    .logo {
+      max-width: 150px;
+      display: block;
+      margin: auto;
+      margin-bottom: 20px;
+    }
+    
+    .report-section {
+      border: 1px solid #dee2e6;
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 20px;
+      background-color: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    
+    .navbar {
+      background-color: #0d6efd;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .navbar-brand {
+      color: white;
+      font-weight: bold;
+    }
+    
+    .nav-link {
+      color: rgba(255,255,255,0.85);
+    }
+    
+    .nav-link:hover {
+      color: white;
+    }
+    
+    .form-label {
+      font-weight: 500;
+    }
+    
+    .btn-primary {
+      background-color: #0d6efd;
+      border-color: #0d6efd;
+    }
+    
+    .btn-primary:hover {
+      background-color: #0b5ed7;
+      border-color: #0a58ca;
+    }
+    
+    .btn-outline-primary {
+      color: #0d6efd;
+      border-color: #0d6efd;
+    }
+    
+    .btn-outline-primary:hover {
+      background-color: #0d6efd;
+      color: white;
+    }
+    
+    .card-header {
+      background-color: #f8f9fa;
+      font-weight: 500;
+    }
+    
+    .signature-pad {
+      border: 1px dashed #dee2e6;
+      border-radius: 5px;
+      margin: 10px 0;
+    }
+    
+    .table-items {
+      margin-top: 20px;
+    }
+    
+    .add-item {
+      margin-top: 10px;
+    }
+    
+    #loginScreen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+    }
+    
+    .alert-success {
+      background-color: #d1e7dd;
+      color: #0f5132;
+    }
+    
+    .alert-danger {
+      background-color: #f8d7da;
+      color: #842029;
+    }
+    
+    .form-control:focus, .form-select:focus {
+      border-color: #86b7fe;
+      box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 25%);
+    }
+    
+    .material-item {
+      background-color: #f8f9fa;
+      border-radius: 5px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    
+    .summary-box {
+      background-color: #f8f9fa;
+      border-radius: 5px;
+      padding: 15px;
+      margin-top: 20px;
+    }
+    
+    @media print {
+      .no-print {
+        display: none;
+      }
+      
+      .container {
+        width: 100%;
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Login Screen -->
+  <div id="loginScreen" class="container">
+    <div class="login-container">
+      <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48dGV4dCB4PSI1MCIgeT0iNTAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyMCIgZmlsbD0iIzBkNmVmZCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+QytTPC90ZXh0PjwvdmVnPg==" alt="Logo Create Plus Solutions" class="logo">
+      <h3 class="text-center mb-4">Create Plus Solutions</h3>
+      <div id="loginAlert" class="alert alert-danger d-none">
+        Credenciais inválidas. Tente novamente.
+      </div>
+      <form id="loginForm">
+        <div class="mb-3">
+          <label for="username" class="form-label">Nome de Usuário</label>
+          <input type="text" class="form-control" id="username" required>
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Senha</label>
+          <input type="password" class="form-control" id="password" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Entrar</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Main Application -->
+  <div id="mainApp" class="d-none">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4">
+      <div class="container">
+        <a class="navbar-brand" href="#">Create Plus Solutions</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link active" id="navRelatorio" href="#">Relatório de Obra</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="navCotacao" href="#">Cotação e Material</a>
+            </li>
+          </ul>
+          <span class="navbar-text me-3 text-white">
+            <i class="fas fa-user me-1"></i> <span id="userDisplay">Usuário</span>
+          </span>
+          <button class="btn btn-outline-light btn-sm" id="logoutBtn">
+            <i class="fas fa-sign-out-alt me-1"></i> Sair
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container pb-4">
+      <!-- Relatório de Obra Section -->
+      <div id="relatorioSection">
+        <h2 class="mb-4"><i class="fas fa-clipboard-list me-2"></i>Relatório de Obra</h2>
+        
+        <div class="report-section">
+          <form id="relatorioForm">
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label">Data de Execução</label>
+                <input type="date" class="form-control" id="dataExecucao" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Número do Relatório</label>
+                <input type="text" class="form-control" id="numeroRelatorio" readonly>
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label">Serviço</label>
+              <select class="form-select" id="servico" required>
+                <option value="">Selecione um serviço</option>
+                <option>Montagem de Câmeras CCTV (IP/Analógico)</option>
+                <option>Motores de Portões</option>
+                <option>Eletro Fence</option>
+                <option>Internet Starlink</option>
+                <option>Vídeo Porteiro</option>
+                <option>Sensores de Movimento</option>
+                <option>Alarmes de Incêndio</option>
+                <option>Equipamentos e Sistemas IT</option>
+                <option>Programação Web</option>
+                <option>Cancelas Automáticas</option>
+                <option>Fabrico de Portões</option>
+                <option>Rastreamento de Viaturas</option>
+                <option>Montagem e Reparação de AC</option>
+                <option>Outro</option>
+              </select>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label">Nome do Cliente</label>
+                <input type="text" class="form-control" id="nomeCliente" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Número do Cliente</label>
+                <input type="text" class="form-control" id="numeroCliente" required>
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label">Endereço da Obra</label>
+              <input type="text" class="form-control" id="enderecoObra" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Descrição do Serviço Realizado</label>
+              <textarea class="form-control" id="descricaoServico" rows="4" required></textarea>
+            </div>
+            
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label">Hora de Início</label>
+                <input type="time" class="form-control" id="horaInicio" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Hora de Término</label>
+                <input type="time" class="form-control" id="horaTermino" required>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Estado da Obra</label>
+              <select class="form-select" id="estadoObra" required>
+                <option>Concluído</option>
+                <option>Em andamento</option>
+                <option>Pendente</option>
+                <option>Aguardando material</option>
+                <option>Cancelado</option>
+              </select>
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label">Materiais Utilizados</label>
+              <textarea class="form-control" id="materiaisUtilizados" rows="3"></textarea>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label">Responsável da Equipa</label>
+                <input type="text" class="form-control" id="responsavelEquipa" value="Nélio Armando Massingue" readonly>
+                <small class="form-text text-muted">Contato: 851576844</small>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Supervisor</label>
+                <input type="text" class="form-control" id="supervisor" value="Nelson Francisco Mate" readonly>
+                <small class="form-text text-muted">Contato: 860000204</small>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Ocorrências / Observações</label>
+              <textarea class="form-control" id="ocorrencias" rows="3"></textarea>
+            </div>
+            
+            <div class="mb-4">
+              <label class="form-label">Assinatura do Cliente</label>
+              <div class="signature-pad">
+                <canvas id="signatureCanvas" width="400" height="200"></canvas>
+              </div>
+              <button type="button" class="btn btn-sm btn-outline-secondary" id="clearSignature">Limpar</button>
+            </div>
+
+            <div class="d-flex justify-content-end">
+              <button type="button" class="btn btn-outline-primary me-2" id="previewRelatorio">
+                <i class="fas fa-eye me-1"></i> Visualizar
+              </button>
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-file-pdf me-1"></i> Gerar PDF
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Cotação Section -->
+      <div id="cotacaoSection" class="d-none">
+        <h2 class="mb-4"><i class="fas fa-calculator me-2"></i>Cotação e Levantamento de Material</h2>
+        
+        <div class="report-section">
+          <form id="cotacaoForm">
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label">Data</label>
+                <input type="date" class="form-control" id="dataCotacao" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Número da Cotação</label>
+                <input type="text" class="form-control" id="numeroCotacao" readonly>
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label">Tipo de Serviço</label>
+              <select class="form-select" id="tipoServicoCotacao" required>
+                <option value="">Selecione um serviço</option>
+                <option>Montagem de Câmeras CCTV (IP/Analógico)</option>
+                <option>Motores de Portões</option>
+                <option>Eletro Fence</option>
+                <option>Internet Starlink</option>
+                <option>Vídeo Porteiro</option>
+                <option>Sensores de Movimento</option>
+                <option>Alarmes de Incêndio</option>
+                <option>Equipamentos e Sistemas IT</option>
+                <option>Programação Web</option>
+                <option>Cancelas Automáticas</option>
+                <option>Fabrico de Portões</option>
+                <option>Rastreamento de Viaturas</option>
+                <option>Montagem e Reparação de AC</option>
+                <option>Outro</option>
+              </select>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label">Nome do Cliente</label>
+                <input type="text" class="form-control" id="nomeClienteCotacao" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Contato do Cliente</label>
+                <input type="text" class="form-control" id="contatoClienteCotacao" required>
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label">Endereço da Obra</label>
+              <input type="text" class="form-control" id="enderecoCotacao" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Descrição do Projeto</label>
+              <textarea class="form-control" id="descricaoProjeto" rows="3" required></textarea>
+            </div>
+            
+            <h5 class="mt-4 mb-3">Itens e Materiais</h5>
+            
+            <div class="table-responsive">
+              <table class="table table-bordered table-items">
+                <thead class="table-light">
+                  <tr>
+                    <th width="45%">Descrição</th>
+                    <th width="15%">Quantidade</th>
+                    <th width="15%">Preço Unitário</th>
+                    <th width="15%">Total</th>
+                    <th width="10%">Ação</th>
+                  </tr>
+                </thead>
+                <tbody id="itemsTable">
+                  <tr>
+                    <td><input type="text" class="form-control item-desc" required></td>
+                    <td><input type="number" class="form-control item-qty" min="1" value="1" required></td>
+                    <td><input type="number" class="form-control item-price" min="0" step="0.01" required></td>
+                    <td><input type="number" class="form-control item-total" readonly></td>
+                    <td><button type="button" class="btn btn-sm btn-danger remove-item"><i class="fas fa-trash"></i></button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            
+            <div class="add-item">
+              <button type="button" class="btn btn-sm btn-outline-primary" id="addItemBtn">
+                <i class="fas fa-plus me-1"></i> Adicionar Item
+              </button>
+            </div>
+            
+            <div class="row mt-3">
+              <div class="col-md-6">
+                <label class="form-label">Condições de Pagamento</label>
+                <select class="form-select" id="condicoesPagamento">
+                  <option>Á vista</option>
+                  <option>30 dias</option>
+                  <option>50% entrada, 50% conclusão</option>
+                  <option>Parcelado</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Validade da Proposta</label>
+                <select class="form-select" id="validadeProposta">
+                  <option>15 dias</option>
+                  <option>30 dias</option>
+                  <option>45 dias</option>
+                  <option>60 dias</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="row mt-3">
+              <div class="col-md-6">
+                <label class="form-label">Prazo de Execução</label>
+                <input type="text" class="form-control" id="prazoExecucao" placeholder="Ex: 10 dias úteis" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Garantia</label>
+                <input type="text" class="form-control" id="garantia" placeholder="Ex: 1 ano" required>
+              </div>
+            </div>
+            
+            <div class="mb-3 mt-3">
+              <label class="form-label">Observações</label>
+              <textarea class="form-control" id="observacoesCotacao" rows="3"></textarea>
+            </div>
+
+            <div class="summary-box">
+              <div class="d-flex justify-content-between">
+                <h5>Resumo</h5>
+                <div>
+                  <strong>Total: </strong>
+                  <span id="totalGeral">0.00</span> MZN
+                </div>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-end mt-3">
+              <button type="button" class="btn btn-outline-primary me-2" id="previewCotacao">
+                <i class="fas fa-eye me-1"></i> Visualizar
+              </button>
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-file-pdf me-1"></i> Gerar PDF
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Preview Modal -->
+    <div class="modal fade" id="previewModal" tabindex="-1">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Visualização</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body" id="previewContent">
+            <!-- Content will be loaded here -->
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            <button type="button" class="btn btn-primary" id="confirmPdf">
+              <i class="fas fa-file-pdf me-1"></i> Gerar PDF
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+ 
+  <script>
+   let users = []; 
+   
+   document.addEventListener('DOMContentLoaded', function() {
+      // User credentials (in a real app, this would come from a server)
+       users = [
+        { username: "admin", password: "admin123", displayName: "Administrador" },
+        { username: "nelio", password: "123456", displayName: "Nélio Massingue" },
+        { username: "nelson", password: "123456", displayName: "Nelson Mate" }
+      ];}
+      ) 
+   
+      
+      // Login form handling
+      document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        
+        const user = users.find(u => u.username === username && u.password === password);
+        
+        if (user) {
+          // Login successful
+          document.getElementById('loginScreen').classList.add('d-none');
+          document.getElementById('mainApp').classList.remove('d-none');
+          document.getElementById('userDisplay').textContent = user.displayName;
+          
+          // Generate report numbers
+          const today = new Date();
+          const dateStr = today.toISOString().slice(0, 10).replace(/-/g, '');
+          document.getElementById('numeroRelatorio').value = `REL-${dateStr}-${Math.floor(Math.random() * 1000)}`;
+          document.getElementById('numeroCotacao').value = `COT-${dateStr}-${Math.floor(Math.random() * 1000)}`;
+          
+          // Set default date
+          document.getElementById('dataExecucao').valueAsDate = today;
+          document.getElementById('dataCotacao').valueAsDate = today;
+          
+          // Initialize signature pad
+          initSignaturePad();
+        } else {
+          // Login failed
+          document.getElementById('loginAlert').classList.remove('d-none');
+          setTimeout(() => {
+            document.getElementById('loginAlert').classList.add('d-none');
+          }, 3000);
+        }
+      });
+      
+      // Logout button
+      document.getElementById('logoutBtn').addEventListener('click', function() {
+        document.getElementById('loginScreen').classList.remove('d-none');
+        document.getElementById('mainApp').classList.add('d-none');
+        document.getElementById('loginForm').reset();
+      });
+      
+      // Navigation
+      document.getElementById('navRelatorio').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('relatorioSection').classList.remove('d-none');
+        document.getElementById('cotacaoSection').classList.add('d-none');
+        document.getElementById('navRelatorio').classList.add('active');
+        document.getElementById('navCotacao').classList.remove('active');
+      });
+      
+      document.getElementById('navCotacao').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('relatorioSection').classList.add('d-none');
+        document.getElementById('cotacaoSection').classList.remove('d-none');
+        document.getElementById('navRelatorio').classList.remove('active');
+        document.getElementById('navCotacao').classList.add('active');
+      });
+      
+      // Initialize signature pad
+      let signaturePad;
+      function initSignaturePad() {
+        const canvas = document.getElementById('signatureCanvas');
+        signaturePad = new SignaturePad(canvas, {
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          penColor: 'black'
+        });
+        
+        // Clear signature
+        document.getElementById('clearSignature').addEventListener('click', function() {
+          signaturePad.clear();
+        });
+      }
+      
+      // Simple SignaturePad implementation
+      class SignaturePad {
+        constructor(canvas, options) {
+          this.canvas = canvas;
+          this.ctx = canvas.getContext('2d');
+          this.ctx.lineWidth = 2;
+          this.ctx.lineCap = 'round';
+          this.ctx.strokeStyle = options.penColor || 'black';
+          
+          // Clear canvas
+          this.ctx.fillStyle = options.backgroundColor || 'white';
+          this.ctx.fillRect(0, 0, canvas.width, canvas.height);
+          
+          this.isDrawing = false;
+          this.points = [];
+          
+          // Add event listeners
+          canvas.addEventListener('mousedown', this.onMouseDown.bind(this));
+          canvas.addEventListener('mousemove', this.onMouseMove.bind(this));
+          canvas.addEventListener('mouseup', this.onMouseUp.bind(this));
+          canvas.addEventListener('touchstart', this.onTouchStart.bind(this));
+          canvas.addEventListener('touchmove', this.onTouchMove.bind(this));
+          canvas.addEventListener('touchend', this.onTouchEnd.bind(this));
+        }
+        
+        onMouseDown(event) {
+          this.isDrawing = true;
+          const rect = this.canvas.getBoundingClientRect();
+          const x = event.clientX - rect.left;
+          const y = event.clientY - rect.top;
+          this.points.push({ x, y });
+        }
+        
+        onMouseMove(event) {
+          if (!this.isDrawing) return;
+          const rect = this.canvas.getBoundingClientRect();
+          const x = event.clientX - rect.left;
+          const y = event.clientY - rect.top;
+          this.points.push({ x, y });
+          this.drawPoints();
+        }
+        
+        onMouseUp() {
+          this.isDrawing = false;
+          this.points = [];
+        }
+        
+        onTouchStart(event) {
+          event.preventDefault();
+          const touch = event.touches[0];
+          const rect = this.canvas.getBoundingClientRect();
+          const x = touch.clientX - rect.left;
+          const y = touch.clientY - rect.top;
+          this.points.push({ x, y });
+        }
+        
+        onTouchMove(event) {
+          event.preventDefault();
+          const touch = event.touches[0];
+          const rect = this.canvas.getBoundingClientRect();
+          const x = touch.clientX - rect.left;
+          const y = touch.clientY - rect.top;
+          this.points.push({ x, y });
+          this.drawPoints();
+        }
+        
+        onTouchEnd(event) {
+          event.preventDefault();
+          this.points = [];
+        }
+        
+        drawPoints() {
+          if (this.points.length < 2) return;
+          
+          this.ctx.beginPath();
+          this.ctx.moveTo(this.points[0].x, this.points[0].y);
+          
+          for (let i = 1; i < this.points.length; i++) {
+            this.ctx.lineTo(this.points[i].x, this.points[i].y);
+          }
+          
+          this.ctx.stroke();
+          this.points = [this.points[this.points.length - 1]];
+        }
+        
+        clear() {
+          this.ctx.fillStyle = 'white';
+          this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        }
+        
+        isEmpty() {
+          const pixelData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height).data;
+          
+          for (let i = 0; i < pixelData.length; i += 4) {
+            if (pixelData[i + 3] !== 0) { // Alpha channel
+              return false;
+            }
+          }
+          
+          return true;
+        }
+        
+        toDataURL() {
+          return this.canvas.toDataURL();
+        }
+      }
+      
+      // Add item to quote
+      document.getElementById('addItemBtn').addEventListener('click', function() {
+        const itemsTable = document.getElementById('itemsTable');
+        const newRow = document.createElement('tr');
+        
+        newRow.innerHTML = `
+          <td><input type="text" class="form-control item-desc" required></td>
+          <td><input type="number" class="form-control item-qty" min="1" value="1" required></td>
+          <td><input type="number" class="form-control item-price" min="0" step="0.01" required></td>
+          <td><input type="number" class="form-control item-total" readonly></td>
+          <td><button type="button" class="btn btn-sm btn-danger remove-item"><i class="fas fa-trash"></i></button></td>
+        `;
+        
+        itemsTable.appendChild(newRow);
+        
+        /// Add event listeners to new row
+addItemEventListeners(newRow);
+});
+
+// Remove item from quote
+document.body.addEventListener('click', function(e) {
+  if (e.target.classList.contains('remove-item') || e.target.parentElement.classList.contains('remove-item')) {
+    const row = e.target.closest('tr');
+    if (document.querySelectorAll('#itemsTable tr').length > 1) {
+      row.remove();
+      calculateTotal();
+    } else {
+      alert('Pelo menos um item deve permanecer na tabela.');
+    }
+  }
+});
+
+// Item calculation functions
+function addItemEventListeners(row) {
+  const qtyInput = row.querySelector('.item-qty');
+  const priceInput = row.querySelector('.item-price');
+  
+  qtyInput.addEventListener('input', function() {
+    calculateRowTotal(row);
+  });
+  
+  priceInput.addEventListener('input', function() {
+    calculateRowTotal(row);
+  });
+}
+
+function calculateRowTotal(row) {
+  const qty = parseFloat(row.querySelector('.item-qty').value) || 0;
+  const price = parseFloat(row.querySelector('.item-price').value) || 0;
+  const total = qty * price;
+  
+  row.querySelector('.item-total').value = total.toFixed(2);
+  calculateTotal();
+}
+
+function calculateTotal() {
+  const itemTotals = document.querySelectorAll('.item-total');
+  let total = 0;
+  
+  itemTotals.forEach(function(item) {
+    total += parseFloat(item.value) || 0;
+  });
+  
+  document.getElementById('totalGeral').textContent = total.toFixed(2);
+}
+
+// Add event listeners to initial row
+const initialRow = document.querySelector('#itemsTable tr');
+addItemEventListeners(initialRow);
+
+// Preview Report
+document.getElementById('previewRelatorio').addEventListener('click', function() {
+  const previewModal = new bootstrap.Modal(document.getElementById('previewModal'));
+  const previewContent = document.getElementById('previewContent');
+  
+  // Get form values
+  const data = {
+    numero: document.getElementById('numeroRelatorio').value,
+    data: formatDateBR(document.getElementById('dataExecucao').value),
+    servico: document.getElementById('servico').value,
+    cliente: document.getElementById('nomeCliente').value,
+    telefone: document.getElementById('numeroCliente').value,
+    endereco: document.getElementById('enderecoObra').value,
+    descricao: document.getElementById('descricaoServico').value,
+    inicio: document.getElementById('horaInicio').value,
+    termino: document.getElementById('horaTermino').value,
+    estado: document.getElementById('estadoObra').value,
+    materiais: document.getElementById('materiaisUtilizados').value,
+    responsavel: document.getElementById('responsavelEquipa').value,
+    supervisor: document.getElementById('supervisor').value,
+    ocorrencias: document.getElementById('ocorrencias').value,
+    assinatura: signaturePad.isEmpty() ? '' : signaturePad.toDataURL()
+  };
+  
+  // Generate preview HTML
+  previewContent.innerHTML = `
+    <div class="preview-report p-3">
+      <div class="text-center mb-4">
+        <h4>Create Plus Solutions</h4>
+        <h5>Relatório de Obra</h5>
+        <p class="text-muted">
+          Relatório Nº: ${data.numero} | Data: ${data.data}
+        </p>
+      </div>
+      
+      <div class="row mb-3">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              Informações do Serviço
+            </div>
+            <div class="card-body">
+              <div class="row mb-2">
+                <div class="col-md-6">
+                  <strong>Tipo de Serviço:</strong> ${data.servico}
+                </div>
+                <div class="col-md-6">
+                  <strong>Estado:</strong> ${data.estado}
+                </div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-md-6">
+                  <strong>Cliente:</strong> ${data.cliente}
+                </div>
+                <div class="col-md-6">
+                  <strong>Telefone:</strong> ${data.telefone}
+                </div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-md-12">
+                  <strong>Endereço:</strong> ${data.endereco}
+                </div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-md-6">
+                  <strong>Hora de Início:</strong> ${data.inicio}
+                </div>
+                <div class="col-md-6">
+                  <strong>Hora de Término:</strong> ${data.termino}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="row mb-3">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              Descrição do Serviço
+            </div>
+            <div class="card-body">
+              <p>${data.descricao.replace(/\n/g, '<br>')}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="row mb-3">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              Materiais Utilizados
+            </div>
+            <div class="card-body">
+              <p>${data.materiais ? data.materiais.replace(/\n/g, '<br>') : 'Nenhum material registrado.'}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="row mb-3">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              Ocorrências e Observações
+            </div>
+            <div class="card-body">
+              <p>${data.ocorrencias ? data.ocorrencias.replace(/\n/g, '<br>') : 'Nenhuma ocorrência registrada.'}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-header">
+              Responsável pela Execução
+            </div>
+            <div class="card-body">
+              <p>${data.responsavel}</p>
+              <p>Contato: 851576844</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-header">
+              Supervisor
+            </div>
+            <div class="card-body">
+              <p>${data.supervisor}</p>
+              <p>Contato: 860000204</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="row mb-3">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              Assinatura do Cliente
+            </div>
+            <div class="card-body text-center">
+              ${data.assinatura ? `<img src="${data.assinatura}" style="max-width: 300px; max-height: 150px;">` : '<p class="text-danger">Assinatura não fornecida</p>'}
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-md-12">
+          <div class="text-center">
+            <p class="text-muted">Create Plus Solutions - Tecnologia e Inovação</p>
+            <p class="text-muted">Contato: +258 860000204 | Email: createplussolutions@gmail.com</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  previewModal.show();
+  
+  // Set action for PDF generation button
+  document.getElementById('confirmPdf').onclick = function() {
+    generatePDF('relatorio');
+  };
+});
+
+// Preview Quote
+document.getElementById('previewCotacao').addEventListener('click', function() {
+  const previewModal = new bootstrap.Modal(document.getElementById('previewModal'));
+  const previewContent = document.getElementById('previewContent');
+  
+  // Calculate all rows
+  document.querySelectorAll('#itemsTable tr').forEach(calculateRowTotal);
+  
+  // Get form values
+  const data = {
+    numero: document.getElementById('numeroCotacao').value,
+    data: formatDateBR(document.getElementById('dataCotacao').value),
+    tipoServico: document.getElementById('tipoServicoCotacao').value,
+    cliente: document.getElementById('nomeClienteCotacao').value,
+    telefone: document.getElementById('contatoClienteCotacao').value,
+    endereco: document.getElementById('enderecoCotacao').value,
+    descricao: document.getElementById('descricaoProjeto').value,
+    condicoesPagamento: document.getElementById('condicoesPagamento').value,
+    validadeProposta: document.getElementById('validadeProposta').value,
+    prazoExecucao: document.getElementById('prazoExecucao').value,
+    garantia: document.getElementById('garantia').value,
+    observacoes: document.getElementById('observacoesCotacao').value,
+    totalGeral: document.getElementById('totalGeral').textContent
+  };
+  
+  // Get items
+  const items = [];
+  document.querySelectorAll('#itemsTable tr').forEach(function(row) {
+    items.push({
+      descricao: row.querySelector('.item-desc').value,
+      quantidade: row.querySelector('.item-qty').value,
+      preco: row.querySelector('.item-price').value,
+      total: row.querySelector('.item-total').value
+    });
+  });
+  
+  // Generate preview HTML
+  previewContent.innerHTML = `
+    <div class="preview-cotacao p-3">
+      <div class="text-center mb-4">
+        <h4>Create Plus Solutions</h4>
+        <h5>Cotação e Levantamento de Material</h5>
+        <p class="text-muted">
+          Cotação Nº: ${data.numero} | Data: ${data.data}
+        </p>
+      </div>
+      
+      <div class="row mb-3">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              Informações do Cliente
+            </div>
+            <div class="card-body">
+              <div class="row mb-2">
+                <div class="col-md-6">
+                  <strong>Cliente:</strong> ${data.cliente}
+                </div>
+                <div class="col-md-6">
+                  <strong>Telefone:</strong> ${data.telefone}
+                </div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-md-12">
+                  <strong>Endereço:</strong> ${data.endereco}
+                </div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-md-12">
+                  <strong>Tipo de Serviço:</strong> ${data.tipoServico}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="row mb-3">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              Descrição do Projeto
+            </div>
+            <div class="card-body">
+              <p>${data.descricao.replace(/\n/g, '<br>')}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="row mb-3">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              Itens e Materiais
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered">
+                  <thead class="table-light">
+                    <tr>
+                      <th width="45%">Descrição</th>
+                      <th width="15%">Quantidade</th>
+                      <th width="15%">Preço Unitário</th>
+                      <th width="15%">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${items.map(item => `
+                      <tr>
+                        <td>${item.descricao}</td>
+                        <td>${item.quantidade}</td>
+                        <td>${parseFloat(item.preco).toFixed(2)} MZN</td>
+                        <td>${parseFloat(item.total).toFixed(2)} MZN</td>
+                      </tr>
+                    `).join('')}
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td colspan="3" class="text-end"><strong>Total Geral:</strong></td>
+                      <td><strong>${parseFloat(data.totalGeral).toFixed(2)} MZN</strong></td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="row mb-3">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              Condições Comerciais
+            </div>
+            <div class="card-body">
+              <div class="row mb-2">
+                <div class="col-md-6">
+                  <strong>Condições de Pagamento:</strong> ${data.condicoesPagamento}
+                </div>
+                <div class="col-md-6">
+                  <strong>Validade da Proposta:</strong> ${data.validadeProposta}
+                </div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-md-6">
+                  <strong>Prazo de Execução:</strong> ${data.prazoExecucao}
+                </div>
+                <div class="col-md-6">
+                  <strong>Garantia:</strong> ${data.garantia}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      ${data.observacoes ? `
+      <div class="row mb-3">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              Observações
+            </div>
+            <div class="card-body">
+              <p>${data.observacoes.replace(/\n/g, '<br>')}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      ` : ''}
+      
+      <div class="row">
+        <div class="col-md-12">
+          <div class="text-center">
+            <p class="text-muted">Create Plus Solutions - Tecnologia e Inovação</p>
+            <p class="text-muted">Contato: +258 860000204 | Email: createplussolutions@gmail.com</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  previewModal.show();
+  
+  // Set action for PDF generation button
+  document.getElementById('confirmPdf').onclick = function() {
+    generatePDF('cotacao');
+  };
+});
+
+// PDF Generation
+function generatePDF(type) {
+  const { jsPDF } = window.jspdf;
+  const contentElement = document.getElementById('previewContent').firstElementChild;
+  
+  // Show loading indication
+  contentElement.innerHTML += `<div class="text-center mt-3" id="pdfLoading">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Gerando PDF...</span>
+    </div>
+    <p>Gerando PDF, por favor aguarde...</p>
+  </div>`;
+  
+  // Use setTimeout to allow the DOM to update with loading indicator
+  setTimeout(() => {
+    // Use html2canvas to render the content
+    html2canvas(contentElement, {
+      scale: 2, // Higher scale for better quality
+      useCORS: true,
+      logging: false,
+      removeContainer: true
+    }).then(canvas => {
+      const imgData = canvas.toDataURL('image/jpeg', 1.0);
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      
+      // A4 dimensions: 210 x 297 mm
+      const pdfWidth = 210;
+      const pdfHeight = 297;
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+      const imgX = (pdfWidth - imgWidth * ratio) / 2;
+      const imgY = 0;
+      
+      pdf.addImage(imgData, 'JPEG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
+      
+      // Generate filename
+      const filename = type === 'relatorio' ? 
+        document.getElementById('numeroRelatorio').value + '.pdf' : 
+        document.getElementById('numeroCotacao').value + '.pdf';
+      
+      // Save PDF
+      pdf.save(filename);
+      
+      // Close modal
+      bootstrap.Modal.getInstance(document.getElementById('previewModal')).hide();
+    });
+  }, 500);
+}
+
+  // Helper function to format date to Brazilian format (DD/MM/YYYY)
+  function formatDateBR(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('pt-BR');
+  }
+
+  // Form submission handling
+  const relatorioForm = document.getElementById('relatorioForm');
+  if (relatorioForm) {
+    relatorioForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      generatePDF('relatorio');
+    });
+  }
+
+  const cotacaoForm = document.getElementById('cotacaoForm');
+  if (cotacaoForm) {
+    cotacaoForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      generatePDF('cotacao');
+    });
+  }
+</script>
+</body>
+</html>
